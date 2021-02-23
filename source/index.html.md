@@ -2,6 +2,7 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
+  - http
   - shell
   - ruby
   - python
@@ -18,6 +19,95 @@ search: true
 
 code_clipboard: true
 ---
+# Transactions
+
+## Get All Transactions
+
+Use this endpoint to retrieve all transactions between a date range.
+
+```ruby
+```
+
+```python
+```
+
+```shell
+```
+
+```javascript
+```
+
+> Example 200 Response
+
+```json
+{
+  "transactions": [
+    {
+      "id": 602,
+      "date": "2020-01-01",
+      "payee": "Starbucks",
+      "amount": "4.5000",
+      "currency": "cad",
+      "notes": "Frappuccino",
+      "category_id": null,
+      "recurring_id": null,
+      "asset_id": null,
+      "plaid_account_id": null,
+      "status": "cleared",
+      "is_group": false,
+      "group_id": null,
+      "parent_id": null,
+      "external_id": null
+    },
+    {
+      "id": 603,
+      "date": "2020-01-02",
+      "payee": "Walmart",
+      "amount": "20.9100",
+      "currency": "usd",
+      "notes": null,
+      "category_id": null,
+      "recurring_id": null,
+      "asset_id": 153,
+      "plaid_account_id": null,
+      "status": "uncleared",
+      "is_group": false,
+      "group_id": null,
+      "parent_id": null,
+      "external_id": "jf2r3t98o943"
+    }
+  ]
+}
+```
+
+> Example 404 Response
+
+```json
+{ "error": "Both start_date and end_date must be specified." }
+```
+
+Returns list of Transaction objects.If no query parameters are set, this endpoint will return transactions for the current calendar month (see start_date and end_date)
+
+### HTTP Request
+
+`GET https://dev.lunchmoney.app/v1/transactions`
+
+### Query Parameters
+
+Parameter         | Type    | Required | Default | Description
+---------         | ----    | -------- | ------- | -----------
+tag_id            | number  | false    |    -    | Filter by tag. Only accepts IDs, not names.
+recurring_id      | number  | false    |    -    | Filter by recurring expense
+plaid_account_id  | number  | false    |    -    | Filter by Plaid account
+category_id       | number  | false    |    -    | Filter by category. Will also match category groups.
+asset_id          | number  | false    |    -    | Filter by asset
+offset            | number  | false    |    -    | Sets the offset for the records returned
+limit             | number  | false    |    -    | Sets the maximum number of records to return.Note: the server will not respond with any indication that there are more records to be returned. Please check the response length to determine if you should make another call with an offset to fetch more transactions.
+start_date        | string  | false    |    -    | Denotes the beginning of the time period to fetch transactions for. Defaults to beginning of current month. Required if end_date exists. Format: YYYY-MM-DD.
+end_date          | string  | false    |    -    | Denotes the end of the time period you'd like to get transactions for. Defaults to end of current month. Required if start_date exists. Format: YYYY-MM-DD.
+debit_as_negative | boolean | false    | false   | Pass in true if you’d like expenses to be returned as negative amounts and credits as positive amounts.
+
+
 
 # Introduction
 
