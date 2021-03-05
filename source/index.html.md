@@ -46,10 +46,6 @@ For POST requests, ensure you set Content-Type to application/json
 
 ## Authentication
 
-Lunch Money API requests are authenticated using the Bearer Token authentication method.
-### Getting an access token
-Get your access token by going to this page [in the app](https://my.lunchmoney.app/developers).
-
 > Use Bearer Tokens in your requests like this:
 
 ```http
@@ -110,7 +106,11 @@ fetch("https://dev.lunchmoney.app/v1/categories", requestOptions)
     .catch(error => console.log('error', error));
 ```
 
----
+Lunch Money API requests are authenticated using the Bearer Token authentication method.
+
+### Getting an access token
+
+Get your access token by going to this page [in the app](https://my.lunchmoney.app/developers).
 
 ## What should I build?
 
