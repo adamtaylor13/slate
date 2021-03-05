@@ -20,6 +20,188 @@ search: true
 code_clipboard: true
 ---
 
+
+# Getting Started
+
+Welcome to the Lunch Money developer API! We created this to enable the user and the community to build rich plug-ins to complement their Lunch Money experience.
+
+---
+
+## Current Status
+
+The developer API is officially in open public beta. During this time, please continue to heed caution and use this API at your own risk as any and all changes are irreversible.
+
+We welcome feedback via email (support@lunchmoney.app). These docs are also on [Github](https://github.com/adamtaylor13/slate), so if you see a mistake or something that could be improved, feel free to open a pull request!
+
+## Connecting to the Lunch Money API
+
+### Connect to the server
+
+The Lunch Money API endpoint is: `https://dev.lunchmoney.app`
+
+<aside class="notice">
+For POST requests, ensure you set Content-Type to application/json
+</aside>
+
+
+## Authentication
+
+Lunch Money API requests are authenticated using the Bearer Token authentication method.
+### Getting an access token
+Get your access token by going to this page [in the app](https://my.lunchmoney.app/developers).
+
+> Use Bearer Tokens in your requests like this:
+
+```http
+GET /v1/categories HTTP/1.1
+Host: dev.lunchmoney.app
+Authorization: Bearer YOURTOKEN
+```
+
+```ruby
+require "uri"
+require "net/http"
+
+url = URI("https://dev.lunchmoney.app/v1/categories")
+
+https = Net::HTTP.new(url.host, url.port)
+https.use_ssl = true
+
+request = Net::HTTP::Get.new(url)
+request["Authorization"] = "Bearer YOURTOKEN"
+
+response = https.request(request)
+puts response.read_body
+```
+
+```python
+import requests
+
+url = "https://dev.lunchmoney.app/v1/categories"
+
+payload={}
+headers = {
+    'Authorization': 'Bearer YOURTOKEN'
+}
+
+response = requests.request("GET", url, headers=headers, data=payload)
+
+print(response.text)
+```
+
+```shell
+  curl --location --request GET 'https://dev.lunchmoney.app/v1/categories' \
+       --header 'Authorization: Bearer YOURTOKEN'
+```
+
+```javascript
+var myHeaders = new Headers();
+myHeaders.append("Authorization", "Bearer YOURTOKEN");
+
+var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+};
+
+fetch("https://dev.lunchmoney.app/v1/categories", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+```
+
+---
+
+## What should I build?
+
+**Great question!** We’ve tried to expose the minimum endpoints needed to enable you to build powerful products and extensions.
+
+Here are a few ideas of what you can build:
+
+### Basic use cases
+
+**Integration with your bank**
+
+Does your bank offer an API? You can build a bridge between Lunch Money and your bank to import transactions automatically.
+
+**Sync Lunch Money data to your personal interface**
+
+If you have your own spreadsheet or other interface, use the API to sync data for personalized viewing and analytics.
+
+### Specific use cases with high demand:
+
+**Amazon receipt matcher**
+
+Do you make a lot of Amazon purchases? I'm sure by now you know how frustrating it is to try to identify exactly what the expense is for! Build an Amazon receipt matcher that pulls in your Amazon purchase history and matches on transactions in Lunch Money and updates the notes.
+
+<aside class="notice">
+Note: apparently Amazon’s API doesn't expose consumer transactions, so to achieve this, you may need to employ another method of getting transaction details (ideas: email forwarder, chrome extension/screen scraper…)
+</aside>
+
+**Venmo integration via email**
+
+The lack of a Venmo and Plaid integration is frustrating for many of our users and is largely out of our control.  Since Venmo sends an email notification every time you send or receive money, build a service that enables users to forward their Venmo notification emails for parsing and insertion into Lunch Money!
+
+**Companion mobile app**
+
+Build a simple mobile app that allows quick insertion of transactions into your Lunch Money account or quick reviewing.
+
+**Zillow integration**
+
+Create an integration that automatically updates the value of a real estate property in Lunch Money.
+
+---
+
+# Awesome Projects
+This is a list of awesome open-sourced projects created by the Lunch Money community!
+
+Description                                                        | Made by                                             | Github Link
+-----------                                                        | -------                                             | -----------
+JavaScript API client with TypeScript support                      | [@joehoyle](https://twitter.com/joe_hoyle)          | [Link](https://github.com/lunch-money/lunch-money-js)
+Sync Monzo transactions to Lunch Money automatically               | [@joehoyle](https://twitter.com/joe_hoyle)          | [Link](https://github.com/joehoyle/monzo-to-lunch-money)
+Sync bunq transactions to Lunch Money automatically                | [@markjongkind](https://twitter.com/markjongkind)   | [Link](https://github.com/markjongkind/bunq-to-lunchmoney)
+Sync your Delta cryptocurrency portfolio balance to Lunch Money    | [@markjongkind](https://twitter.com/markjongkind)   | [Link](https://github.com/markjongkind/delta-to-lunchmoney)
+Lunch Money React Native app (WIP)                                 | [@yuanhaochiang](https://twitter.com/yuanhaochiang) | [Link](https://github.com/yuanworks/bento-money)
+Match Amazon transactions and set transaction notes in Lunch Money | [@samwelnella](https://github.com/samwelnella)      | [Link](https://github.com/samwelnella/amazon-transactions-to-lunchmoney)
+Go API Client                                                      | [@icco](https://twitter.com/icco)                   | [Link](https://github.com/icco/lunchmoney)
+
+<aside class="notice">
+Did you create something with the Lunch Money API? Let us know and we'll add it to this list!
+</aside>
+
+---
+
+# Changelog
+A log of changes. Breaking changes will be denoted with 🚨
+## March 28, 2020
+
+### New
+Pagination options for [GET /v1/transactions](#get-all-transactions) (limit and offset)
+Filter options for [GET /v1/transactions](#get-all-transactions) (asset_id, recurring_id, plaid_account_id, tag_id, category_id)
+New endpoint: [GET /v1/tags](#get-all-tags)
+
+### Changed
+* Support for tags in [PUT /v1/transactions/:id](#update-transaction) and [POST /v1/transactions](#insert-transactions)
+* 🚨Split object for [splitting transactions](#update-transaction) is moved out of the Transactions object and to a higher-level. We will still support the split property for a few more weeks before removing it completely.
+
+---
+
+# FAQ
+
+## The endpoint I need is not listed. Can you add it?
+
+If you would like a specific endpoint which is not currently supported, please let us know by emailing [support@lunchmoney.app](mailto:support@lunchmoney.app) and stating your use case.
+
+## What currencies are supported?
+
+Check [here](#supported-currencies) for a list of all the currencies we currently support. If a currency is missing, let us know via email and we’ll try to get it added!
+
+## I’ve built something! Now what?
+
+Awesome! Please share with us via email about what you built! If you are willing to share your code, we encourage you to open-source your tool/plug-in so others in the Lunch Money community can benefit and we'll add it to our [Awesome Projects](#awesome-projects) page.
+
+---
+
 # Transactions
 
 ## Transaction Object
@@ -786,7 +968,178 @@ Plaid Accounts are individual bank accounts that you have linked to Lunch Money 
 
 
 
+# Appendix
 
+## Supported Currencies
+
+> Supported Currencies in Lunch Money
+
+```text
+aed
+afn
+all
+amd
+ang
+aoa
+ars
+aud
+awg
+azn
+bam
+bbd
+bdt
+bgn
+bhd
+bif
+bmd
+bnd
+bob
+brl
+bsd
+btc
+btn
+bwp
+byn
+bzd
+cad
+cdf
+chf
+clp
+cny
+cop
+crc
+cuc
+cup
+cve
+czk
+djf
+dkk
+dop
+dzd
+egp
+ern
+etb
+eur
+fjd
+fkp
+gbp
+gel
+ggp
+ghs
+gip
+gmd
+gnf
+gtq
+gyd
+hkd
+hnl
+hrk
+htg
+huf
+idr
+ils
+imp
+inr
+iqd
+irr
+isk
+jep
+jmd
+jod
+jpy
+kes
+kgs
+khr
+kmf
+kpw
+krw
+kwd
+kyd
+kzt
+lak
+lbp
+lkr
+lrd
+lsl
+ltl
+lvl
+lyd
+mad
+mdl
+mga
+mkd
+mmk
+mnt
+mop
+mro
+mur
+mvr
+mwk
+mxn
+myr
+mzn
+nad
+ngn
+nio
+nok
+npr
+nzd
+omr
+pab
+pen
+pgk
+php
+pkr
+pln
+pyg
+qar
+ron
+rsd
+rub
+rwf
+sar
+sbd
+scr
+sdg
+sek
+sgd
+shp
+sll
+sos
+srd
+std
+svc
+syp
+szl
+thb
+tjs
+tmt
+tnd
+top
+try
+ttd
+twd
+tzs
+uah
+ugx
+usd
+uyu
+uzs
+vef
+vnd
+vuv
+wst
+xaf
+xcd
+xof
+xpf
+yer
+zar
+zmw
+zwl
+```
+
+Here you'll find a list of currently supported currencies in Lunch Money. If your currency is missing, please let us know via email at [support@lunchmoney.app](mailto:support@lunchmoney.app) and we'll work on getting it added.
 
 
 
